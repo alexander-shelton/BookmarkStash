@@ -27,6 +27,18 @@
 # Enable debug output (set to '1' to enable)
 # BOOKMARKSTASH_DEBUG="1"
 
+# Floating Terminal Mode (Sway-specific)
+# Enable floating terminal mode for sway-specific.sh
+# BOOKMARKSTASH_FLOATING="1"
+
+# Floating terminal preferences (auto-detected if not set)
+# Supported: footclient, foot, alacritty, kitty, wezterm, gnome-terminal
+# BOOKMARKSTASH_FLOATING_TERMINAL="footclient"
+
+# Floating terminal window size
+# BOOKMARKSTASH_FLOATING_WIDTH="82"
+# BOOKMARKSTASH_FLOATING_HEIGHT="25"
+
 # Example configurations for different setups:
 
 # Minimal setup (uses defaults)
@@ -45,3 +57,10 @@
 # Custom paths setup
 # BOOKMARKSTASH_MANAGER_PATH="/usr/local/bin/bookmark_manager.py"
 # BOOKMARKSTASH_BROWSER="/usr/bin/chromium"
+
+# Sway floating terminal setup
+# BOOKMARKSTASH_FLOATING="1"
+# BOOKMARKSTASH_FLOATING_TERMINAL="footclient"
+# BOOKMARKSTASH_FLOATING_WIDTH="90"
+# BOOKMARKSTASH_FLOATING_HEIGHT="30"
+# BOOKMARKSTASH_FZF_ARGS="--height=100% --border=rounded --margin=1 --padding=1 --color=16"

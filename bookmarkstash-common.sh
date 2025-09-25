@@ -8,6 +8,7 @@
 DEFAULT_BOOKMARK_MANAGER_PATH="$HOME/scripts/bookmark_manager.py"
 DEFAULT_ROFI_THEME=""
 DEFAULT_MENU_SYSTEM="rofi"
+DEFAULT_FLOATING_TERMINAL="footclient"
 
 # Configuration sources (in order of precedence):
 # 1. Environment variables
@@ -156,6 +157,112 @@ show_menu() {
     esac
 }
 
+# Get available floating terminal
+get_floating_terminal() {
+    # Check user preference first
+    if [ -n "$BOOKMARKSTASH_FLOATING_TERMINAL" ]; then
+        if command_exists "$BOOKMARKSTASH_FLOATING_TERMINAL"; then
+            echo "$BOOKMARKSTASH_FLOATING_TERMINAL"
+            return
+        fi
+    fi
+
+    # Auto-detect common Sway/Wayland terminals
+    local terminals="footclient foot alacritty kitty wezterm gnome-terminal"
+
+    for term in $terminals; do
+        if command_exists "$term"; then
+            echo "$term"
+            return
+        fi
+    done
+
+    return 1
+}
+
+# Get floating terminal arguments for different terminals
+get_floating_terminal_args() {
+    local terminal="$1"
+    local width="${BOOKMARKSTASH_FLOATING_WIDTH:-82}"
+    local height="${BOOKMARKSTASH_FLOATING_HEIGHT:-25}"
+
+    case "$terminal" in
+        footclient)
+            echo "--app-id floating_shell --window-size-chars ${width}x${height}"
+            ;;
+        foot)
+            echo "--app-id floating_shell --window-size-chars ${width}x${height}"
+            ;;
+        alacritty)
+            echo "--class floating_shell --option window.dimensions.columns=$width --option window.dimensions.lines=$height"
+            ;;
+        kitty)
+            echo "--class floating_shell --override initial_window_width=${width}c --override initial_window_height=${height}c"
+            ;;
+        wezterm)
+            echo "--class floating_shell"  # WezTerm uses different config approach
+            ;;
+        gnome-terminal)
+            echo "--class floating_shell --geometry=${width}x${height}"
+            ;;
+        *)
+            echo "--class floating_shell"  # Generic fallback
+            ;;
+    esac
+}
+
+# Launch floating terminal with fzf
+launch_floating_fzf() {
+    local prompt="$1"
+
+    local terminal
+    terminal=$(get_floating_terminal)
+    if [ -z "$terminal" ]; then
+        echo "Error: No suitable floating terminal found" >&2
+        return 1
+    fi
+
+    local term_args
+    term_args=$(get_floating_terminal_args "$terminal")
+
+    debug_print "Using terminal: $terminal with args: $term_args"
+
+    # Create a temp file to store the input data
+    local temp_input="/tmp/bookmarkstash_input_$$"
+    local temp_output="/tmp/bookmarkstash_output_$$"
+
+    # Save stdin to temp file
+    cat > "$temp_input"
+
+    # Create a simple script that reads from the temp file and runs fzf
+    local temp_script="/tmp/bookmarkstash_fzf_$$"
+    cat > "$temp_script" << EOF
+#!/usr/bin/env sh
+selection=\$(cat "$temp_input" | fzf --prompt="$prompt> " \${BOOKMARKSTASH_FZF_ARGS:-} --height=100% --border=rounded --margin=1 --padding=1)
+echo "\$selection" > "$temp_output"
+EOF
+    chmod +x "$temp_script"
+
+    # Launch the terminal and wait for it to complete
+    $terminal $term_args -- "$temp_script"
+
+    # Read the result if it exists
+    local result=""
+    if [ -f "$temp_output" ]; then
+        result=$(cat "$temp_output")
+    fi
+
+    # Clean up
+    rm -f "$temp_script" "$temp_input" "$temp_output"
+
+    echo "$result"
+}
+
+# Check if floating mode is enabled
+is_floating_mode() {
+    [ "${BOOKMARKSTASH_FLOATING:-}" = "1" ] || [ "${BOOKMARKSTASH_FLOATING:-}" = "true" ]
+}
+
 # Validate dependencies
 check_dependencies() {
     local missing_deps=""
@@ -236,6 +343,12 @@ Optional:
   BOOKMARKSTASH_DMENU_ARGS     Additional arguments for dmenu
   BOOKMARKSTASH_FZF_ARGS       Additional arguments for fzf
   BOOKMARKSTASH_DEBUG          Set to '1' to enable debug output
+
+Floating Terminal (Sway-specific):
+  BOOKMARKSTASH_FLOATING       Set to '1' or 'true' to enable floating terminal mode
+  BOOKMARKSTASH_FLOATING_TERMINAL    Preferred terminal (default: footclient)
+  BOOKMARKSTASH_FLOATING_WIDTH       Terminal width in characters (default: 82)
+  BOOKMARKSTASH_FLOATING_HEIGHT      Terminal height in characters (default: 25)
 
 Config File:
   \${XDG_CONFIG_HOME:-\$HOME/.config}/bookmarkstash/config
