@@ -1,182 +1,140 @@
 # BookmarkStash
 
-A simple, flexible command-line bookmark manager with GUI integration for quick bookmark access and management.
+A simple, powerful bookmark manager that bridges the gap between command-line efficiency and GUI convenience. Built around shell scripts with seamless integration for rofi, dmenu, and fzf.
 
-## Features
+## ✨ Features
 
-- **Command-line interface** with intuitive subcommands
-- **GUI integration** with popular menu systems (rofi, dmenu, fzf)
+- **One-click bookmark adding** from clipboard with GUI prompts
+- **Visual bookmark browsing** by title or tag using your favorite menu system
 - **Cross-platform clipboard support** (Wayland, X11, macOS)
-- **Flexible browser detection** (Firefox, Chrome, Brave, Opera, etc.)
+- **Smart browser detection** and launching
+- **Clean command-line interface** for power users
+- **Flexible configuration** with environment variables and config files
 - **JSON storage** with human-readable format
-- **Tag-based organization** for easy categorization
-- **Search and filtering** by title, tag, or URL
-- **Highly configurable** with environment variables and config files
 
-## Quick Start
+## 🚀 Quick Start
 
-1. **Install:**
-   ```bash
-   git clone <repository-url>
-   cd BookmarkStash
-   ./install.sh
-   ```
-
-2. **Add a bookmark:**
-   ```bash
-   bookmark-add  # From clipboard with GUI
-   # OR directly:
-   python3 lib/bookmark_manager.py add "https://github.com" "GitHub" "dev"
-   ```
-
-3. **Browse bookmarks:**
-   ```bash
-   bookmark-browse-title  # GUI browser
-   bookmark-browse-tags   # Browse by tag
-   ```
-
-## Installation
-
-### Prerequisites
-
-**For command-line usage:**
-- Python 3.6+
-
-**For GUI integration (optional):**
-- Menu system: `rofi` (recommended), `dmenu`, or `fzf`
-- Clipboard manager: `wl-paste` (Wayland), `xclip` (X11), or `pbpaste` (macOS)
-- Web browser: Any modern browser (auto-detected)
-
-### Setup
-
-**Automated Installation (Recommended):**
 ```bash
-git clone <repository-url>
+# Install
+git clone https://github.com/yourusername/BookmarkStash.git
+cd BookmarkStash
+./install.sh
+
+# Add a bookmark from clipboard (GUI)
+bookmark-add
+
+# Browse your bookmarks (GUI)
+bookmark-browse-title
+bookmark-browse-tags
+
+# Direct CLI usage
+bookmark-manager add "https://github.com" "GitHub" "dev"
+bookmark-manager list --tag "dev"
+```
+
+## 📦 Installation
+
+### Automated Installation (Recommended)
+
+```bash
+git clone https://github.com/yourusername/BookmarkStash.git
 cd BookmarkStash
 ./install.sh
 ```
 
 The install script will:
-- Make all scripts executable
-- Offer to add `bin/` to your PATH
-- Create config directory and copy example config
-- Test the installation
 
-**Manual Installation:**
+- ✅ Make all scripts executable
+- ✅ Create a `bookmark-manager` command for CLI access
+- ✅ Offer to add commands to your shell's PATH
+- ✅ Set up configuration directory with example config
+- ✅ Test the installation
+
+### Manual Installation
+
 ```bash
 # Make scripts executable
 chmod +x bin/*
 
-# Add to PATH (add to ~/.bashrc or ~/.zshrc)
+# Add to PATH (add to ~/.bashrc, ~/.zshrc, etc.)
 export PATH="$PWD/bin:$PATH"
 
-# Create config file
+# Create config
 mkdir -p ~/.config/bookmarkstash
 cp config/config.example ~/.config/bookmarkstash/config
 ```
 
-## Usage
+### Prerequisites
 
-### Command-Line Interface
+**Required:**
 
-#### Adding Bookmarks
+- Python 3.6+
+
+**Optional (for GUI features):**
+
+- Menu system: `rofi` (recommended), `dmenu`, or `fzf`
+- Clipboard: `wl-paste` (Wayland), `xclip` (X11), or `pbpaste` (macOS)
+- Web browser: Any modern browser (auto-detected)
+
+## 🎯 Usage
+
+### GUI Commands (Main Interface)
+
 ```bash
-# Add a bookmark with URL, title, and tag
-python3 lib/bookmark_manager.py add "https://example.com" "Example Site" "web"
-
-# URL validation ensures proper format
-python3 lib/bookmark_manager.py add "example.com" "Example" "web"  # Auto-adds https://
-```
-
-#### Listing Bookmarks
-```bash
-# List all bookmarks
-python3 lib/bookmark_manager.py list
-
-# List bookmarks by tag
-python3 lib/bookmark_manager.py list --tag "dev"
-
-# List bookmarks by title
-python3 lib/bookmark_manager.py list --title "GitHub"
-```
-
-#### Searching Bookmarks
-```bash
-# Search in all fields
-python3 lib/bookmark_manager.py search "python"
-
-# Search by specific tag
-python3 lib/bookmark_manager.py search --tag "dev"
-
-# Search by specific title
-python3 lib/bookmark_manager.py search --title "GitHub"
-```
-
-#### Managing Bookmarks
-```bash
-# Delete by URL
-python3 lib/bookmark_manager.py delete --url "https://example.com"
-
-# Delete by title
-python3 lib/bookmark_manager.py delete --title "Example Site"
-
-# Get statistics
-python3 lib/bookmark_manager.py stats
-
-# List all tags
-python3 lib/bookmark_manager.py tags
-
-# List all titles
-python3 lib/bookmark_manager.py titles
-```
-
-#### Custom Data File
-```bash
-# Use a different bookmark file
-python3 lib/bookmark_manager.py --file /path/to/bookmarks.json list
-```
-
-### GUI Integration Scripts
-
-#### Add Bookmark from Clipboard
-```bash
+# Add bookmark from clipboard with GUI prompt
 bookmark-add
-```
-- Reads URL from clipboard
-- Prompts for title and tag using your configured menu system
-- Automatically detects clipboard manager (wl-paste, xclip, pbpaste)
 
-#### Browse Bookmarks by Title
-```bash
+# Browse all bookmarks by title
 bookmark-browse-title
-```
-- Shows all bookmark titles in a searchable menu
-- Opens selected bookmark in your preferred browser
 
-#### Browse Bookmarks by Tag
-```bash
+# Browse bookmarks by tag, then select specific bookmark
 bookmark-browse-tags
 ```
-- First select a tag, then select a bookmark from that tag
-- Opens selected bookmark in your preferred browser
 
-## Configuration
+### CLI Commands (Power User)
+
+```bash
+# Add bookmarks
+bookmark-manager add "https://example.com" "Example Site" "web"
+bookmark-manager add "example.com" "Example" "web"  # Auto-adds https://
+
+# List bookmarks
+bookmark-manager list                    # All bookmarks
+bookmark-manager list --tag "dev"       # By tag
+bookmark-manager list --title "GitHub"  # By title
+
+# Search bookmarks
+bookmark-manager search "python"        # Search all fields
+bookmark-manager search --tag "dev"     # Search by tag
+bookmark-manager search --title "docs"  # Search by title
+
+# Manage bookmarks
+bookmark-manager delete --url "https://example.com"
+bookmark-manager delete --title "Example Site"
+bookmark-manager tags                    # List all tags
+bookmark-manager titles                  # List all titles
+bookmark-manager stats                   # Show statistics
+
+# Custom data file
+bookmark-manager --file /path/to/custom.json list
+```
+
+## ⚙️ Configuration
 
 ### Environment Variables
 
-Set these in your shell profile (`~/.bashrc`, `~/.zshrc`) or config file:
+Set in your shell config (`~/.bashrc`, `~/.zshrc`) or in the config file:
 
 ```bash
-# Required (if not in default location)
+# Paths (usually auto-detected)
 BOOKMARKSTASH_MANAGER_PATH="/path/to/lib/bookmark_manager.py"
 
-# Optional customizations
+# Customization
 BOOKMARKSTASH_BROWSER="firefox"                    # Preferred browser
-BOOKMARKSTASH_MENU_SYSTEM="rofi"                   # Menu system: rofi, dmenu, fzf
-BOOKMARKSTASH_CLIPBOARD_CMD="wl-paste"             # Custom clipboard command
+BOOKMARKSTASH_MENU_SYSTEM="rofi"                   # Menu: rofi, dmenu, fzf
 BOOKMARKSTASH_DEBUG="1"                            # Enable debug output
 
-# Menu system styling
+# Menu styling
 BOOKMARKSTASH_ROFI_ARGS="-theme gruvbox-dark -width 50"
 BOOKMARKSTASH_DMENU_ARGS="-fn 'DejaVu Sans Mono-12'"
 BOOKMARKSTASH_FZF_ARGS="--height=40% --layout=reverse"
@@ -187,137 +145,129 @@ BOOKMARKSTASH_FZF_ARGS="--height=40% --layout=reverse"
 Create `~/.config/bookmarkstash/config`:
 
 ```bash
-# Copy the example and customize
-cp config/config.example ~/.config/bookmarkstash/config
+# Uses same variable names as environment variables
+BOOKMARKSTASH_BROWSER="brave"
+BOOKMARKSTASH_MENU_SYSTEM="rofi"
+BOOKMARKSTASH_ROFI_ARGS="-theme Arc-Dark -width 60"
 ```
 
-The config file uses the same environment variable names. Settings are applied in this order:
-1. Environment variables (highest priority)
-2. Config file
-3. Built-in defaults (lowest priority)
+Priority order: Environment Variables → Config File → Defaults
 
-### View Configuration Help
+### View All Options
 
 ```bash
-# Source the common library to see all options
+# See all configuration options and current values
 . lib/bookmarkstash-common.sh && show_env_help
 ```
 
-## Supported Systems
+## 📁 Project Structure
+
+```
+BookmarkStash/
+├── install.sh              # One-command installation
+├── bin/                     # Main user commands
+│   ├── bookmark-add         # Add from clipboard (GUI)
+│   ├── bookmark-browse-title # Browse by title (GUI)
+│   ├── bookmark-browse-tags # Browse by tag (GUI)
+│   └── bookmark-manager     # Direct CLI access
+├── lib/                     # Backend components
+│   ├── bookmark_manager.py  # Core Python engine
+│   ├── bookmarkstash-common.sh # Shell functions
+│   └── platform-specific/
+│       └── sway-specific.sh # Platform adaptations
+└── config/
+    └── config.example       # Configuration template
+```
+
+## 🌐 Platform Support
 
 ### Menu Systems
-- **rofi** (default) - Feature-rich application launcher
+
+- **rofi** - Feature-rich launcher (recommended)
 - **dmenu** - Minimalist dynamic menu
-- **fzf** - Command-line fuzzy finder
+- **fzf** - Terminal-based fuzzy finder
 
 ### Clipboard Managers
-- **wl-paste** (Wayland) - Auto-detected on Wayland sessions
-- **xclip** (X11) - Auto-detected on X11 sessions
-- **pbpaste** (macOS) - Auto-detected on macOS
+
+- **wl-paste** - Wayland (auto-detected)
+- **xclip** - X11 (auto-detected)
+- **pbpaste** - macOS (auto-detected)
 
 ### Browsers
-Auto-detects and prioritizes currently running browsers:
-- Firefox
-- Google Chrome / Chromium
-- Brave Browser
-- Opera
-- Vivaldi
 
-## Data Storage
+Auto-detects and prioritizes running browsers:
+Firefox, Chrome/Chromium, Brave, Opera, Vivaldi, Safari
 
-- **Location:** `~/.bookmarks.json` (configurable)
-- **Format:** JSON with UTF-8 encoding
-- **Structure:** Array of objects with `url`, `title`, `tag` fields
-- **Backup:** Consider backing up your bookmark file regularly
+## 💾 Data Storage
 
-Example bookmark file:
+- **Location:** `~/.bookmarks.json` (default, configurable)
+- **Format:** JSON array with UTF-8 encoding
+- **Structure:** Objects with `url`, `title`, `tag` fields
+
+Example:
+
 ```json
 [
-    {
-        "url": "https://github.com",
-        "title": "GitHub",
-        "tag": "dev"
-    },
-    {
-        "url": "https://stackoverflow.com",
-        "title": "Stack Overflow",
-        "tag": "dev"
-    }
+  {
+    "url": "https://github.com",
+    "title": "GitHub",
+    "tag": "dev"
+  },
+  {
+    "url": "https://stackoverflow.com",
+    "title": "Stack Overflow",
+    "tag": "dev"
+  }
 ]
 ```
 
-## Examples
-
-### Basic Workflow
-```bash
-# Add some bookmarks
-python3 lib/bookmark_manager.py add "https://github.com" "GitHub" "dev"
-python3 lib/bookmark_manager.py add "https://docs.python.org" "Python Docs" "dev"
-python3 lib/bookmark_manager.py add "https://news.ycombinator.com" "Hacker News" "news"
-
-# Browse by tag
-python3 lib/bookmark_manager.py list --tag "dev"
-
-# Search across all fields
-python3 lib/bookmark_manager.py search "python"
-
-# Get statistics
-python3 lib/bookmark_manager.py stats
-```
-
-### GUI Integration
-```bash
-# Set up custom rofi theme
-export BOOKMARKSTASH_ROFI_ARGS="-theme Arc-Dark -width 60"
-
-# Add bookmark from clipboard
-bookmark-add
-
-# Browse bookmarks visually
-bookmark-browse-title
-```
-
-### Different Menu Systems
-```bash
-# Use dmenu instead of rofi
-export BOOKMARKSTASH_MENU_SYSTEM="dmenu"
-bookmark-browse-tags
-
-# Use fzf for terminal-based browsing
-export BOOKMARKSTASH_MENU_SYSTEM="fzf"
-bookmark-add
-```
-
-## Troubleshooting
+## 🔧 Troubleshooting
 
 ### Common Issues
 
-**"Command not found" errors:**
-- Run the install script: `./install.sh`
-- Ensure scripts are executable: `chmod +x bin/*`
-- Add bin/ to PATH or use full paths
-- Check that Python 3 is installed: `python3 --version`
+**Command not found:**
 
-**GUI scripts not working:**
-- Install required menu system: `sudo apt install rofi` (Ubuntu/Debian)
-- Check clipboard manager: `wl-paste` (Wayland) or `xclip` (X11)
-- Verify browser installation
+```bash
+# Run the installer
+./install.sh
 
-**Bookmark manager not found:**
-- Set `BOOKMARKSTASH_MANAGER_PATH` to correct location (should be `lib/bookmark_manager.py`)
-- Ensure `lib/bookmark_manager.py` has proper permissions
+# Or manually add to PATH
+export PATH="$PWD/bin:$PATH"
+```
+
+**GUI not working:**
+
+```bash
+# Install menu system
+sudo apt install rofi          # Ubuntu/Debian
+brew install rofi              # macOS
+sudo pacman -S rofi            # Arch
+
+# Install clipboard manager
+sudo apt install wl-clipboard  # Wayland
+sudo apt install xclip         # X11
+```
+
+**Python script not found:**
+
+```bash
+# Check the path
+ls lib/bookmark_manager.py
+
+# Or set manually
+export BOOKMARKSTASH_MANAGER_PATH="$PWD/lib/bookmark_manager.py"
+```
 
 ### Debug Mode
 
 Enable detailed logging:
+
 ```bash
 export BOOKMARKSTASH_DEBUG="1"
-bookmark-add  # Will show debug information
+bookmark-add  # Will show debug info
 ```
 
-### Dependency Check
-
-The scripts automatically check for required dependencies and provide helpful error messages. To manually verify:
+### Verify Installation
 
 ```bash
 # Check what's detected
@@ -325,14 +275,55 @@ The scripts automatically check for required dependencies and provide helpful er
 init_bookmarkstash
 ```
 
-## Contributing
+## 🎨 Examples
 
-Feel free to submit issues, feature requests, or pull requests. Areas for contribution:
+### Basic Workflow
+
+```bash
+# Add some bookmarks
+bookmark-manager add "https://github.com" "GitHub" "dev"
+bookmark-manager add "https://docs.python.org" "Python Docs" "dev"
+bookmark-manager add "https://news.ycombinator.com" "Hacker News" "news"
+
+# Browse visually
+bookmark-browse-tags  # Select 'dev' → Select 'GitHub' → Opens in browser
+
+# CLI power user
+bookmark-manager search "python"
+bookmark-manager list --tag "dev"
+bookmark-manager stats
+```
+
+### Customization
+
+```bash
+# Custom rofi theme
+export BOOKMARKSTASH_ROFI_ARGS="-theme Arc-Dark -width 70"
+bookmark-browse-title
+
+# Use different menu system
+export BOOKMARKSTASH_MENU_SYSTEM="fzf"
+bookmark-add
+
+# Custom browser
+export BOOKMARKSTASH_BROWSER="brave"
+```
+
+## 🤝 Contributing
+
+Issues, feature requests, and pull requests are welcome! Areas for contribution:
+
 - Additional menu system support
-- More browser integrations
-- Import/export features
+- Browser integration improvements
+- Import/export features (browser bookmarks, etc.)
 - Additional search capabilities
+- Platform-specific optimizations
 
-## License
+## 📝 License
 
-[Add your license information here]
+[MIT License](LICENSE)
+
+---
+
+**Made for people who love both keyboard shortcuts and visual interfaces.** 🚀
+
