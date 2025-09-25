@@ -93,7 +93,7 @@ browse_by_title() {
 
     # Get URL for the selected title
     local url
-    url=$(python3 "$manager_path" search --title "$selected_title" 2>/dev/null | head -n 1)
+    url=$(python3 "$manager_path" search "$selected_title" 2>/dev/null | head -n 1)
     if [ -z "$url" ]; then
         echo "Error: No URL found for title '$selected_title'" >&2
         return 1
@@ -128,7 +128,7 @@ browse_by_tag() {
 
     # Get titles for the bookmarks with this tag
     local bookmark_titles
-    bookmark_titles=$(python3 "$manager_path" list --tag "$selected_tag" 2>/dev/null | grep -v "^URL:" | sed 's/^Title: //')
+    bookmark_titles=$(python3 "$manager_path" search --tag "$selected_tag" 2>/dev/null | grep -v "^URL:" | sed 's/^Title: //')
     if [ -z "$bookmark_titles" ]; then
         echo "Error: Failed to get bookmark titles for tag '$selected_tag'" >&2
         return 1
@@ -150,7 +150,7 @@ browse_by_tag() {
 
     # Get URL for the selected bookmark
     local url
-    url=$(python3 "$manager_path" search --title "$selected_title" 2>/dev/null | head -n 1)
+    url=$(python3 "$manager_path" search "$selected_title" 2>/dev/null | head -n 1)
     if [ -z "$url" ]; then
         echo "Error: No URL found for bookmark '$selected_title'" >&2
         return 1
@@ -186,7 +186,7 @@ search_all() {
 
     # Get URL for the selected bookmark
     local url
-    url=$(python3 "$manager_path" search --title "$selected_title" 2>/dev/null | head -n 1)
+    url=$(python3 "$manager_path" search "$selected_title" 2>/dev/null | head -n 1)
     if [ -z "$url" ]; then
         echo "Error: No URL found for bookmark '$selected_title'" >&2
         return 1
@@ -201,11 +201,12 @@ open_bookmark() {
     local url="$1"
     local title="$2"
 
-    if ! "$browser" "$url" 2>/dev/null & then
-        echo "Error: Failed to open browser" >&2
+    if ! command -v "$browser" >/dev/null 2>&1; then
+        echo "Error: Browser '$browser' not found" >&2
         return 1
     fi
 
+    "$browser" "$url" >/dev/null 2>&1 &
     echo "Opened '$title' in $browser"
 }
 

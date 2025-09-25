@@ -238,7 +238,7 @@ launch_floating_fzf() {
     local temp_script="/tmp/bookmarkstash_fzf_$$"
     cat > "$temp_script" << EOF
 #!/usr/bin/env sh
-selection=\$(cat "$temp_input" | fzf --prompt="$prompt> " \${BOOKMARKSTASH_FZF_ARGS:-} --height=100% --border=rounded --margin=1 --padding=1)
+selection=\$(cat "$temp_input" | fzf --prompt="$prompt> " \${BOOKMARKSTASH_FZF_ARGS:-} --style full --border rounded --layout reverse)
 echo "\$selection" > "$temp_output"
 EOF
     chmod +x "$temp_script"
