@@ -1,0 +1,64 @@
+#!/usr/bin/env sh
+#
+# display_bookmarks_by_title.sh - Browse bookmarks by title
+#
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(dirname "$0")"
+
+# Source common functions
+# shellcheck source=./bookmarkstash-common.sh
+. "$SCRIPT_DIR/bookmarkstash-common.sh"
+
+# Initialize configuration
+init_bookmarkstash
+
+# Check dependencies
+if ! check_dependencies "" browser; then
+    exit 1
+fi
+
+# Get bookmark manager path
+manager_path=$(get_bookmark_manager_path)
+
+# Get browser
+browser=$(get_browser)
+if [ -z "$browser" ]; then
+    echo "Error: No suitable browser found" >&2
+    exit 1
+fi
+
+debug_print "Using browser: $browser"
+
+# Get all bookmark titles
+titles=$(python3 "$manager_path" titles 2>/dev/null)
+if [ $? -ne 0 ] || [ -z "$titles" ]; then
+    echo "Error: Failed to get bookmark titles or no bookmarks found" >&2
+    exit 1
+fi
+
+# Let user select a title
+selected_title=$(show_menu "Select a bookmark title" "$titles")
+if [ -z "$selected_title" ]; then
+    echo "No title selected" >&2
+    exit 1
+fi
+
+debug_print "Selected title: $selected_title"
+
+# Get URL for the selected title
+url=$(python3 "$manager_path" search "$selected_title" 2>/dev/null | head -n 1)
+if [ -z "$url" ]; then
+    echo "Error: No URL found for title '$selected_title'" >&2
+    exit 1
+fi
+
+debug_print "Opening URL: $url"
+
+# Open in browser
+if ! "$browser" "$url" 2>/dev/null & then
+    echo "Error: Failed to open browser" >&2
+    exit 1
+fi
+
+echo "Opened '$selected_title' in $browser"

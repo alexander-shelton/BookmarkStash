@@ -1,0 +1,47 @@
+# BookmarkStash Configuration Example
+# Copy this to ~/.config/bookmarkstash/config and customize as needed
+
+# Path to bookmark_manager.py (required if not in default location)
+# BOOKMARKSTASH_MANAGER_PATH="/path/to/bookmark_manager.py"
+
+# Preferred browser (auto-detected if not set)
+# Supported: firefox, google-chrome-stable, chromium, google-chrome, brave-browser, opera, vivaldi-stable
+# BOOKMARKSTASH_BROWSER="firefox"
+
+# Menu system to use (default: rofi)
+# Options: rofi, dmenu, fzf
+# BOOKMARKSTASH_MENU_SYSTEM="rofi"
+
+# Custom clipboard command (auto-detected if not set)
+# Examples:
+#   Wayland: wl-paste
+#   X11: xclip -selection clipboard -o
+#   macOS: pbpaste
+# BOOKMARKSTASH_CLIPBOARD_CMD="wl-paste"
+
+# Additional arguments for menu systems
+# BOOKMARKSTASH_ROFI_ARGS="-theme gruvbox-dark -width 50"
+# BOOKMARKSTASH_DMENU_ARGS="-fn 'DejaVu Sans Mono-12' -nb '#222222' -nf '#ffffff'"
+# BOOKMARKSTASH_FZF_ARGS="--height=40% --layout=reverse --border"
+
+# Enable debug output (set to '1' to enable)
+# BOOKMARKSTASH_DEBUG="1"
+
+# Example configurations for different setups:
+
+# Minimal setup (uses defaults)
+# (no configuration needed)
+
+# Setup with custom theming
+# BOOKMARKSTASH_BROWSER="firefox"
+# BOOKMARKSTASH_MENU_SYSTEM="rofi"
+# BOOKMARKSTASH_ROFI_ARGS="-theme Arc-Dark -width 60 -lines 15"
+# BOOKMARKSTASH_DEBUG="0"
+
+# Terminal-only setup using fzf
+# BOOKMARKSTASH_MENU_SYSTEM="fzf"
+# BOOKMARKSTASH_FZF_ARGS="--height=50% --layout=reverse --border --preview-window=up:3:wrap"
+
+# Custom paths setup
+# BOOKMARKSTASH_MANAGER_PATH="/usr/local/bin/bookmark_manager.py"
+# BOOKMARKSTASH_BROWSER="/usr/bin/chromium"

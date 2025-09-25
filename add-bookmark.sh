@@ -1,8 +1,60 @@
 #!/usr/bin/env sh
 #
+# add-bookmark.sh - Add bookmark from clipboard with rofi interface
 #
-#
-input="$(echo "$(wl-paste)" | rofi -dmenu -p "Enter title and tag:")"
-title="$(echo "$input" | gawk '{print $1}')"
-tag="$(echo "$input" | gawk '{print $2}')"
-python "$HOME"/scripts/bookmark_manager.py add "$(wl-paste)" "$title" "$tag"
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(dirname "$0")"
+
+# Source common functions
+# shellcheck source=./bookmarkstash-common.sh
+. "$SCRIPT_DIR/bookmarkstash-common.sh"
+
+# Initialize configuration
+init_bookmarkstash
+
+# Check dependencies
+if ! check_dependencies clipboard; then
+    exit 1
+fi
+
+# Get clipboard content
+clipboard_cmd=$(get_clipboard_cmd)
+if ! url=$($clipboard_cmd 2>/dev/null); then
+    echo "Error: Failed to get clipboard content" >&2
+    exit 1
+fi
+
+if [ -z "$url" ]; then
+    echo "Error: Clipboard is empty" >&2
+    exit 1
+fi
+
+debug_print "URL from clipboard: $url"
+
+# Get title and tag from user
+input=$(show_menu "Enter title and tag (space-separated):")
+if [ -z "$input" ]; then
+    echo "Cancelled by user" >&2
+    exit 1
+fi
+
+# Parse input - handle quoted strings and spaces better
+title=$(echo "$input" | awk '{print $1}')
+tag=$(echo "$input" | awk '{print $2}')
+
+if [ -z "$title" ] || [ -z "$tag" ]; then
+    echo "Error: Both title and tag are required" >&2
+    exit 1
+fi
+
+debug_print "Title: $title, Tag: $tag"
+
+# Add bookmark
+manager_path=$(get_bookmark_manager_path)
+if ! python3 "$manager_path" add "$url" "$title" "$tag"; then
+    echo "Error: Failed to add bookmark" >&2
+    exit 1
+fi
+
+echo "Bookmark added successfully: $title ($tag)"
