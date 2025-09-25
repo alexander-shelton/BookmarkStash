@@ -15,24 +15,24 @@ A simple, flexible command-line bookmark manager with GUI integration for quick 
 
 ## Quick Start
 
-1. **Add a bookmark:**
+1. **Install:**
    ```bash
-   python3 bookmark_manager.py add "https://github.com" "GitHub" "dev"
+   git clone <repository-url>
+   cd BookmarkStash
+   ./install.sh
    ```
 
-2. **List all bookmarks:**
+2. **Add a bookmark:**
    ```bash
-   python3 bookmark_manager.py list
+   bookmark-add  # From clipboard with GUI
+   # OR directly:
+   python3 lib/bookmark_manager.py add "https://github.com" "GitHub" "dev"
    ```
 
-3. **Search bookmarks:**
+3. **Browse bookmarks:**
    ```bash
-   python3 bookmark_manager.py search "python"
-   ```
-
-4. **GUI bookmark browser** (requires rofi/dmenu/fzf):
-   ```bash
-   ./display-bookmarks-by-title.sh
+   bookmark-browse-title  # GUI browser
+   bookmark-browse-tags   # Browse by tag
    ```
 
 ## Installation
@@ -49,29 +49,31 @@ A simple, flexible command-line bookmark manager with GUI integration for quick 
 
 ### Setup
 
-1. **Clone or download** the repository:
-   ```bash
-   git clone <repository-url>
-   cd BookmarkStash
-   ```
+**Automated Installation (Recommended):**
+```bash
+git clone <repository-url>
+cd BookmarkStash
+./install.sh
+```
 
-2. **Make scripts executable:**
-   ```bash
-   chmod +x *.sh
-   ```
+The install script will:
+- Make all scripts executable
+- Offer to add `bin/` to your PATH
+- Create config directory and copy example config
+- Test the installation
 
-3. **Optional: Create config file:**
-   ```bash
-   mkdir -p ~/.config/bookmarkstash
-   cp config.example ~/.config/bookmarkstash/config
-   # Edit the config file as needed
-   ```
+**Manual Installation:**
+```bash
+# Make scripts executable
+chmod +x bin/*
 
-4. **Optional: Add to PATH:**
-   ```bash
-   # Add to your ~/.bashrc or ~/.zshrc
-   export PATH="$PATH:/path/to/BookmarkStash"
-   ```
+# Add to PATH (add to ~/.bashrc or ~/.zshrc)
+export PATH="$PWD/bin:$PATH"
+
+# Create config file
+mkdir -p ~/.config/bookmarkstash
+cp config/config.example ~/.config/bookmarkstash/config
+```
 
 ## Usage
 
@@ -80,65 +82,65 @@ A simple, flexible command-line bookmark manager with GUI integration for quick 
 #### Adding Bookmarks
 ```bash
 # Add a bookmark with URL, title, and tag
-python3 bookmark_manager.py add "https://example.com" "Example Site" "web"
+python3 lib/bookmark_manager.py add "https://example.com" "Example Site" "web"
 
 # URL validation ensures proper format
-python3 bookmark_manager.py add "example.com" "Example" "web"  # Auto-adds https://
+python3 lib/bookmark_manager.py add "example.com" "Example" "web"  # Auto-adds https://
 ```
 
 #### Listing Bookmarks
 ```bash
 # List all bookmarks
-python3 bookmark_manager.py list
+python3 lib/bookmark_manager.py list
 
 # List bookmarks by tag
-python3 bookmark_manager.py list --tag "dev"
+python3 lib/bookmark_manager.py list --tag "dev"
 
 # List bookmarks by title
-python3 bookmark_manager.py list --title "GitHub"
+python3 lib/bookmark_manager.py list --title "GitHub"
 ```
 
 #### Searching Bookmarks
 ```bash
 # Search in all fields
-python3 bookmark_manager.py search "python"
+python3 lib/bookmark_manager.py search "python"
 
 # Search by specific tag
-python3 bookmark_manager.py search --tag "dev"
+python3 lib/bookmark_manager.py search --tag "dev"
 
 # Search by specific title
-python3 bookmark_manager.py search --title "GitHub"
+python3 lib/bookmark_manager.py search --title "GitHub"
 ```
 
 #### Managing Bookmarks
 ```bash
 # Delete by URL
-python3 bookmark_manager.py delete --url "https://example.com"
+python3 lib/bookmark_manager.py delete --url "https://example.com"
 
 # Delete by title
-python3 bookmark_manager.py delete --title "Example Site"
+python3 lib/bookmark_manager.py delete --title "Example Site"
 
 # Get statistics
-python3 bookmark_manager.py stats
+python3 lib/bookmark_manager.py stats
 
 # List all tags
-python3 bookmark_manager.py tags
+python3 lib/bookmark_manager.py tags
 
 # List all titles
-python3 bookmark_manager.py titles
+python3 lib/bookmark_manager.py titles
 ```
 
 #### Custom Data File
 ```bash
 # Use a different bookmark file
-python3 bookmark_manager.py --file /path/to/bookmarks.json list
+python3 lib/bookmark_manager.py --file /path/to/bookmarks.json list
 ```
 
 ### GUI Integration Scripts
 
 #### Add Bookmark from Clipboard
 ```bash
-./add-bookmark.sh
+bookmark-add
 ```
 - Reads URL from clipboard
 - Prompts for title and tag using your configured menu system
@@ -146,14 +148,14 @@ python3 bookmark_manager.py --file /path/to/bookmarks.json list
 
 #### Browse Bookmarks by Title
 ```bash
-./display-bookmarks-by-title.sh
+bookmark-browse-title
 ```
 - Shows all bookmark titles in a searchable menu
 - Opens selected bookmark in your preferred browser
 
 #### Browse Bookmarks by Tag
 ```bash
-./display-bookmarks-by-tags.sh
+bookmark-browse-tags
 ```
 - First select a tag, then select a bookmark from that tag
 - Opens selected bookmark in your preferred browser
@@ -166,7 +168,7 @@ Set these in your shell profile (`~/.bashrc`, `~/.zshrc`) or config file:
 
 ```bash
 # Required (if not in default location)
-BOOKMARKSTASH_MANAGER_PATH="/path/to/bookmark_manager.py"
+BOOKMARKSTASH_MANAGER_PATH="/path/to/lib/bookmark_manager.py"
 
 # Optional customizations
 BOOKMARKSTASH_BROWSER="firefox"                    # Preferred browser
@@ -186,7 +188,7 @@ Create `~/.config/bookmarkstash/config`:
 
 ```bash
 # Copy the example and customize
-cp config.example ~/.config/bookmarkstash/config
+cp config/config.example ~/.config/bookmarkstash/config
 ```
 
 The config file uses the same environment variable names. Settings are applied in this order:
@@ -198,7 +200,7 @@ The config file uses the same environment variable names. Settings are applied i
 
 ```bash
 # Source the common library to see all options
-. ./bookmarkstash-common.sh && show_env_help
+. lib/bookmarkstash-common.sh && show_env_help
 ```
 
 ## Supported Systems
@@ -249,18 +251,18 @@ Example bookmark file:
 ### Basic Workflow
 ```bash
 # Add some bookmarks
-python3 bookmark_manager.py add "https://github.com" "GitHub" "dev"
-python3 bookmark_manager.py add "https://docs.python.org" "Python Docs" "dev"
-python3 bookmark_manager.py add "https://news.ycombinator.com" "Hacker News" "news"
+python3 lib/bookmark_manager.py add "https://github.com" "GitHub" "dev"
+python3 lib/bookmark_manager.py add "https://docs.python.org" "Python Docs" "dev"
+python3 lib/bookmark_manager.py add "https://news.ycombinator.com" "Hacker News" "news"
 
 # Browse by tag
-python3 bookmark_manager.py list --tag "dev"
+python3 lib/bookmark_manager.py list --tag "dev"
 
 # Search across all fields
-python3 bookmark_manager.py search "python"
+python3 lib/bookmark_manager.py search "python"
 
 # Get statistics
-python3 bookmark_manager.py stats
+python3 lib/bookmark_manager.py stats
 ```
 
 ### GUI Integration
@@ -269,21 +271,21 @@ python3 bookmark_manager.py stats
 export BOOKMARKSTASH_ROFI_ARGS="-theme Arc-Dark -width 60"
 
 # Add bookmark from clipboard
-./add-bookmark.sh
+bookmark-add
 
 # Browse bookmarks visually
-./display-bookmarks-by-title.sh
+bookmark-browse-title
 ```
 
 ### Different Menu Systems
 ```bash
 # Use dmenu instead of rofi
 export BOOKMARKSTASH_MENU_SYSTEM="dmenu"
-./display-bookmarks-by-tags.sh
+bookmark-browse-tags
 
 # Use fzf for terminal-based browsing
 export BOOKMARKSTASH_MENU_SYSTEM="fzf"
-./add-bookmark.sh
+bookmark-add
 ```
 
 ## Troubleshooting
@@ -291,7 +293,9 @@ export BOOKMARKSTASH_MENU_SYSTEM="fzf"
 ### Common Issues
 
 **"Command not found" errors:**
-- Ensure scripts are executable: `chmod +x *.sh`
+- Run the install script: `./install.sh`
+- Ensure scripts are executable: `chmod +x bin/*`
+- Add bin/ to PATH or use full paths
 - Check that Python 3 is installed: `python3 --version`
 
 **GUI scripts not working:**
@@ -300,15 +304,15 @@ export BOOKMARKSTASH_MENU_SYSTEM="fzf"
 - Verify browser installation
 
 **Bookmark manager not found:**
-- Set `BOOKMARKSTASH_MANAGER_PATH` to correct location
-- Ensure `bookmark_manager.py` has proper permissions
+- Set `BOOKMARKSTASH_MANAGER_PATH` to correct location (should be `lib/bookmark_manager.py`)
+- Ensure `lib/bookmark_manager.py` has proper permissions
 
 ### Debug Mode
 
 Enable detailed logging:
 ```bash
 export BOOKMARKSTASH_DEBUG="1"
-./add-bookmark.sh  # Will show debug information
+bookmark-add  # Will show debug information
 ```
 
 ### Dependency Check
@@ -317,7 +321,7 @@ The scripts automatically check for required dependencies and provide helpful er
 
 ```bash
 # Check what's detected
-. ./bookmarkstash-common.sh
+. lib/bookmarkstash-common.sh
 init_bookmarkstash
 ```
 

@@ -5,7 +5,9 @@
 #
 
 # Configuration defaults
-DEFAULT_BOOKMARK_MANAGER_PATH="$HOME/scripts/bookmark_manager.py"
+# Try to auto-detect the bookmark manager location relative to this script
+# This assumes the common library is in lib/ and manager is also in lib/
+DEFAULT_BOOKMARK_MANAGER_PATH="$(dirname "$(readlink -f "${BASH_SOURCE:-$0}")")/bookmark_manager.py"
 DEFAULT_ROFI_THEME=""
 DEFAULT_MENU_SYSTEM="rofi"
 DEFAULT_FLOATING_TERMINAL="footclient"
@@ -333,7 +335,7 @@ show_env_help() {
 BookmarkStash Configuration Environment Variables:
 
 Required:
-  BOOKMARKSTASH_MANAGER_PATH   Path to bookmark_manager.py (default: \$HOME/scripts/bookmark_manager.py)
+  BOOKMARKSTASH_MANAGER_PATH   Path to bookmark_manager.py (default: auto-detected relative to lib/)
 
 Optional:
   BOOKMARKSTASH_BROWSER        Preferred browser (auto-detected if not set)

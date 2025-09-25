@@ -7,8 +7,8 @@
 SCRIPT_DIR="$(dirname "$0")"
 
 # Source common functions
-# shellcheck source=./bookmarkstash-common.sh
-. "$SCRIPT_DIR/bookmarkstash-common.sh"
+# shellcheck source=../lib/bookmarkstash-common.sh
+. "$SCRIPT_DIR/../lib/bookmarkstash-common.sh"
 
 # Initialize configuration
 init_bookmarkstash
