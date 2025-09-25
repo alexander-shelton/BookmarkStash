@@ -37,6 +37,12 @@ printf "Making scripts executable... "
 chmod +x "$BIN_DIR"/*
 printf "${GREEN}done${NC}\n"
 
+# Create symlink for direct CLI access
+printf "Creating bookmark-manager symlink... "
+ln -sf "$INSTALL_DIR/lib/bookmark_manager.py" "$BIN_DIR/bookmark-manager"
+chmod +x "$BIN_DIR/bookmark-manager"
+printf "${GREEN}done${NC}\n"
+
 # Check if bin directory is already in PATH
 if echo "$PATH" | grep -q "$BIN_DIR"; then
     printf "${GREEN}✓${NC} bin/ directory is already in your PATH\n"
@@ -152,8 +158,9 @@ echo "Available commands:"
 echo "  • bookmark-add           - Add bookmark from clipboard"
 echo "  • bookmark-browse-title  - Browse bookmarks by title"
 echo "  • bookmark-browse-tags   - Browse bookmarks by tag"
+echo "  • bookmark-manager       - Direct CLI access to all functionality"
 echo
-echo "Direct CLI access:"
+echo "Alternative CLI access:"
 echo "  • python3 lib/bookmark_manager.py [command]"
 echo
 echo "Configuration:"
