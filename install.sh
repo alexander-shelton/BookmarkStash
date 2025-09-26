@@ -43,6 +43,17 @@ ln -sf "$INSTALL_DIR/lib/bookmark_manager.py" "$BIN_DIR/bookmark-manager"
 chmod +x "$BIN_DIR/bookmark-manager"
 printf "${GREEN}done${NC}\n"
 
+# Check for Sway and create sway-specific command
+if [ -n "$SWAYSOCK" ] || [ "$XDG_SESSION_DESKTOP" = "sway" ] || pgrep -x sway >/dev/null 2>&1; then
+    printf "Sway detected - creating bookmark-sway command... "
+    ln -sf "$INSTALL_DIR/lib/platform-specific/sway-specific.sh" "$BIN_DIR/bookmark-sway"
+    chmod +x "$BIN_DIR/bookmark-sway"
+    printf "${GREEN}done${NC}\n"
+    SWAY_DETECTED=true
+else
+    SWAY_DETECTED=false
+fi
+
 # Check if bin directory is already in PATH
 if echo "$PATH" | grep -q "$BIN_DIR"; then
     printf "${GREEN}✓${NC} bin/ directory is already in your PATH\n"
@@ -159,6 +170,9 @@ echo "  • bookmark-add           - Add bookmark from clipboard"
 echo "  • bookmark-browse-title  - Browse bookmarks by title"
 echo "  • bookmark-browse-tags   - Browse bookmarks by tag"
 echo "  • bookmark-manager       - Direct CLI access to all functionality"
+if [ "$SWAY_DETECTED" = true ]; then
+    echo "  • bookmark-sway          - Sway-specific floating terminal browser"
+fi
 echo
 echo "Alternative CLI access:"
 echo "  • python3 lib/bookmark_manager.py [command]"
